@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+	<title>JSON Demo</title>
+	<meta charset="utf-8"/>
+
+
+
+	<style>
+		body {background-color: #89cff0; font-weight: 900; color: #111111; text-align: center;}
+	</style>
+	<script>
+		function loadMessages() {
+			/* Step 1: Make instance of XHR object...
+			...to make HTTP request after page is loaded*/
+			request = new XMLHttpRequest();
+			console.log("1: created request");
+ 
+		// Step 2: Open the JSON file at remote location
+ 
+			request.open("GET", "https://api.wheretheiss.at/v1/satellites/25544", true);
+
+			console.log("2: open success");
+ 	
+			// Step 3: set up callback for when HTTP response is returned (i.e., you get the JSON file back)
+
+			request.onreadystatechange = function() {
+				console.log("3:  event fired");
+			
+ 
+				if (request.readyState == 4 && request.status == 200) {
+
+					// Step 5: when we get all the JSON data back, parse it and use it
+					console.log("5:  data is ready");
+					theData = request.responseText;
+	
+					data = JSON.parse(theData);
+					
+					
+
+					document.getElementById("messages").innerHTML = "Latitude: "  + data["latitude"] +  											"</br>"	+ 	"Longitude: " + data["longitude"] + "</br>"	+ 	"Velocity: " + data["velocity"]; 
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("messages").innerHTML = "Whoops, something went terribly wrong!";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					console.log("6:  ready state 3- request received,data being sent");
+					document.getElementById("messages").innerHTML = "Come back soon!";
+
+				}
+
+			}//end on readystate change
+	
+		// Step 4: fire off the HTTP request
+			request.send();
+			console.log("4 request sent");
+		}
+	</script>
+
+</head>
+
+
+<body onload="loadMessages()">
+
+	<h1>AJAX Data</h1>
+	<!-- <h2> API Info: </h2> -->
+	<p> I selected an API that tells you where the International Space Station is
+		in real time. I found it on the following website: https://dev.to/alanjc/5-simple-to-use-apis-for-beginners-2e0n
+	</p>
+	<p> I used longitude, latitude, and the velocity for the API request. </p>
+	<p> Two useful applications for this API could be determining when the International Space Station
+		is close to you (relative location of course, it is way way way higher than you), and tracking its location to find out if it is approaching anything of importance, assuming you know where other things are. </p>
+
+	<div id="messages">Loading...</div>
+</body>
+</html>
